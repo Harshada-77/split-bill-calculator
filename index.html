@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Split Bill Calculator</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div class="container">
+    <h1>💰 Split Bill Calculator</h1>
+
+    <div class="section">
+      <h2>Participants</h2>
+      <div id="participants"></div>
+      <button onclick="addParticipant()">+ Add Participant</button>
+    </div>
+
+    <div class="section">
+      <h2>Add Expense</h2>
+      <form id="expenseForm" onsubmit="addExpense(event)">
+        <input type="text" id="payer" placeholder="Who paid?" required />
+        <input type="number" id="amount" placeholder="Amount (₹)" required />
+        <input type="text" id="description" placeholder="For what?" required />
+        <input type="text" id="sharedWith" placeholder="Shared with (comma separated)" required />
+        <button type="submit">Add Expense</button>
+      </form>
+    </div>
+
+    <div class="section">
+      <h2>Expenses</h2>
+      <ul id="expenseList"></ul>
+    </div>
+
+    <div class="section">
+      <h2>Balance Sheet</h2>
+      <div id="balanceSheet"></div>
+      <button onclick="exportSummary()">📤 Export Summary</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
