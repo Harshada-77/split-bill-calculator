@@ -4,7 +4,7 @@ let expenses = [];
 function addParticipant() {
   const name = prompt("Enter participant name:");
   if (name && !participants.includes(name)) {
-    participants.push(name);
+    participants.push(name.trim());
     renderParticipants();
   } else if (participants.includes(name)) {
     alert("Participant already added.");
@@ -33,10 +33,14 @@ function addExpense(event) {
     return;
   }
 
-  const sharedWith = sharedWithRaw.split(",").map(p => p.trim()).filter(p => participants.includes(p));
+  let sharedWith = sharedWithRaw.split(",").map(p => p.trim()).filter(p => participants.includes(p));
+
+  if (!sharedWith.includes(payer)) {
+    sharedWith.push(payer); // auto-include payer
+  }
 
   if (sharedWith.length === 0) {
-    alert("No valid shared-with participants found!");
+    alert("No valid participants found in sharedWith.");
     return;
   }
 
@@ -64,10 +68,12 @@ function calculateBalances() {
 
   expenses.forEach(({ payer, amount, sharedWith }) => {
     const share = amount / sharedWith.length;
-    sharedWith.forEach(p => {
-      if (p !== payer) {
-        balanceMap[p] -= share;
-        balanceMap[payer] += share;
+
+    sharedWith.forEach(person => {
+      if (person === payer) {
+        balanceMap[payer] += amount - share; // payer paid full, owes only their share
+      } else {
+        balanceMap[person] -= share; // others owe their share
       }
     });
   });
@@ -110,7 +116,9 @@ function settleDebts(balanceMap) {
 
 function renderBalanceSheet(transactions) {
   const div = document.getElementById("balanceSheet");
-  div.innerHTML = transactions.length ? transactions.map(t => `<p>🔁 ${t}</p>`).join("") : "<p>✅ All Settled!</p>";
+  div.innerHTML = transactions.length
+    ? transactions.map(t => `<p>🔁 ${t}</p>`).join("")
+    : `<p>✅ All Settled!</p>`;
 }
 
 function exportSummary() {
